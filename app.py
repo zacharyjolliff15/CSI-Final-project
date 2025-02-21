@@ -6,7 +6,7 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
 # Use your own OpenAI API key (ensure you keep this secure)
-openai.api_key = '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'
+openai.api_key = ''
 
 MONITOR_DIR = r'C:\ProgramData\MySQL\MySQL Server 8.0\Data\mysql\slow_log.csv'
 HTML_FILE = 'index.html'
