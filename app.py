@@ -6,13 +6,37 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
 # Use your own OpenAI API key (ensure you keep this secure)
-openai.api_key = 'YOUR_API_KEY'
+openai.api_key = ''
 
 MONITOR_FILE = r'C:\ProgramData\MySQL\MySQL Server 8.0\Data\DESKTOP-BDLUB0E-slow.log'
 HTML_FILE = 'index.html'
 
-# This will track where we last read the file
 last_position = 0
+
+def poll_file():
+    # Open the file and move the pointer to its end to ignore existing content.
+    with open(MONITOR_FILE, 'r', encoding='utf-8') as f:
+        f.seek(0, os.SEEK_END)
+        last_position = f.tell()
+
+    while True:
+        try:
+            with open(MONITOR_FILE, 'r', encoding='utf-8') as f:
+                # Go to where we left off
+                f.seek(last_position)
+                new_data = f.read()
+                if new_data:
+                    print(f"New data: {new_data!r}")
+                    # Process new_data as needed, e.g.:
+                    # update_explanation(new_data)
+                # Update the last_position pointer
+                last_position = f.tell()
+        except Exception as e:
+            print(f"Error reading file: {e}")
+        time.sleep(0.5)  # Poll every half-second 
+
+if __name__ == "__main__":
+    poll_file()
 
 def update_explanation(new_content):
     """Call OpenAI to explain the new content, update HTML file, and open in browser."""
