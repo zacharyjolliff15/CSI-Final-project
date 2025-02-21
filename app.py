@@ -10,33 +10,7 @@ openai.api_key = ''
 
 MONITOR_FILE = r'C:\ProgramData\MySQL\MySQL Server 8.0\Data\DESKTOP-BDLUB0E-slow.log'
 HTML_FILE = 'index.html'
-
 last_position = 0
-
-def poll_file():
-    # Open the file and move the pointer to its end to ignore existing content.
-    with open(MONITOR_FILE, 'r', encoding='utf-8') as f:
-        f.seek(0, os.SEEK_END)
-        last_position = f.tell()
-
-    while True:
-        try:
-            with open(MONITOR_FILE, 'r', encoding='utf-8') as f:
-                # Go to where we left off
-                f.seek(last_position)
-                new_data = f.read()
-                if new_data:
-                    print(f"New data: {new_data!r}")
-                    # Process new_data as needed, e.g.:
-                    # update_explanation(new_data)
-                # Update the last_position pointer
-                last_position = f.tell()
-        except Exception as e:
-            print(f"Error reading file: {e}")
-        time.sleep(0.5)  # Poll every half-second 
-
-if __name__ == "__main__":
-    poll_file()
 
 def update_explanation(new_content):
     """Call OpenAI to explain the new content, update HTML file, and open in browser."""
@@ -47,7 +21,7 @@ def update_explanation(new_content):
                 {"role": "system", "content": "You are a helpful assistant."},
                 {"role": "user", "content": f"Please provide a detailed explanation of the following content:\n\n{new_content}"}
             ],
-            max_tokens=5  # adjust as needed
+            max_tokens=150  # adjust as needed
         )
         explanation = response.choices[0].message.content.strip()
     except Exception as e:
@@ -88,46 +62,25 @@ def update_explanation(new_content):
     webbrowser.open(file_url)
     print("HTML display updated.")
 
-class TailEventHandler(FileSystemEventHandler):
-    """Watchdog event handler that reads only new appended data."""
-    def on_modified(self, event):
-        global last_position
-        if event.src_path == MONITOR_FILE:
-            try:
-                with open(MONITOR_FILE, 'r', encoding='utf-8') as f:
-                    f.seek(last_position)
-                    new_data = f.read()
-                    last_position = f.tell()
+def poll_file():
+    # Open the file and move the pointer to its end to ignore existing content.
+    global last_position
+    with open(MONITOR_FILE, 'r', encoding='utf-8') as f:
+        f.seek(0, os.SEEK_END)
+        last_position = f.tell()
+
+    while True:
+        try:
+            with open(MONITOR_FILE, 'r', encoding='utf-8') as f:
+                f.seek(last_position)
+                new_data = f.read()
                 if new_data:
-                    print(f"New data detected: {new_data!r}")
+                    print(f"New data: {new_data!r}")
                     update_explanation(new_data)
-            except Exception as e:
-                print(f"Error reading new data from file: {e}")
+                last_position = f.tell()
+        except Exception as e:
+            print(f"Error reading file: {e}")
+        time.sleep(0.5)  # Poll every half-second 
 
 if __name__ == "__main__":
-    if os.access(MONITOR_FILE, os.R_OK):
-        print("Read access granted.")
-    else:
-        print("Read access denied.")
-        exit(1)
-
-    # Initialize last_position to the current end of file to avoid processing old content
-    if os.path.exists(MONITOR_FILE):
-        with open(MONITOR_FILE, 'r', encoding='utf-8') as f:
-            f.seek(0, os.SEEK_END)
-            last_position = f.tell()
-
-    event_handler = TailEventHandler()
-    observer = Observer()
-    # Monitor the directory that contains the file (not the file itself)
-    observer.schedule(event_handler, path=os.path.dirname(MONITOR_FILE), recursive=False)
-    observer.start()
-    print(f"Monitoring file: {MONITOR_FILE}")
-
-    try:
-        # Use a small sleep interval to be responsive
-        while True:
-            time.sleep(1)
-    except KeyboardInterrupt:
-        observer.stop()
-    observer.join()
+    poll_file()
