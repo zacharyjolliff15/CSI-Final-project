@@ -4,7 +4,7 @@ What it does currently:
 Will automatically detect logs that are considered "slow" from MySQL server, and output the query that caused this to basic chatGPT wrapper in index.html
 
 Set Up
-- Download MySQL Server Workbench (Install SQL Server CLI aswell)
+- Download MySQL Server Workbench (Install SQL Server aswell)
 - Once Workbench is open, create a new connection, and once created start the server from the workbench
 - Once running, use the database-test-schema.txt file to copy and paste the SQL query to create the database.
 
