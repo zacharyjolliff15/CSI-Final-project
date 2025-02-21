@@ -41,4 +41,5 @@ Running application
 - Once Workbench is open, create a new connection, and once created start the server from the workbench
 - Once running, use the database-test-schema.txt file to copy and paste the SQL query to create the database.
 - Navigate to app.py folder and run 'py app.py'
+- To test, go into SQL server and run a query that takes longer than 10 seconds, example SELECT SLEEP(25);
 
