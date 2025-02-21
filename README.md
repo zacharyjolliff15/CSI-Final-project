@@ -1,27 +1,19 @@
 For windows machines only
+Pre-requirements
 Use python 3.13.2 64-bit for windows
-pip install openAI 
+py -3 -m pip install --upgrade openai
+py -3 -m pip install --upgrade watchdog
+naviagte to C:\ProgramData\MySQL\MySQL Server 8.0\'s Data folder and allow read access by selecting it and selecting accept.
+change MONITOR_FILE location to your specific computer name
+Ex 1)
+MONITOR_FILE = r'C:\ProgramData\MySQL\MySQL Server 8.0\Data\DESKTOP-BDLUB0E-slow.log
 
-What it does currently:
-Will automatically detect logs that are considered "slow" from MySQL server, and output the query that caused this to basic chatGPT wrapper in index.html
+Ex 2)
+MONITOR_FILE = r'C:\ProgramData\MySQL\MySQL Server 8.0\Data\DESKTOP-SH1LFM2-slow.log
 
-Set Up
-- Download MySQL Server Workbench (Install SQL Server aswell)
-- Once Workbench is open, create a new connection, and once created start the server from the workbench
-- Once running, use the database-test-schema.txt file to copy and paste the SQL query to create the database.
-
-
-
-
-
-
-
-
-
-- Once extracted, navigate to 'C:\ProgramData\MySQL\MySQL Server 8.0\Data\DESKTOP-BDLUB0E-slow.txt (values might slightly change), right click on it
-  Open the Properties dialog:
+go to your DESKTOP-[computerName]-slow.log file and right click it
+Open the Properties dialog:
   Right-click the file (mysql.slow_log.csv) and choose “Properties,” then go to the “Security” tab.
-
   Edit Permissions:
   Click the “Edit…” button to change permissions. If you’re not already listed, you’ll need to add your user account.
 
@@ -38,3 +30,15 @@ Set Up
   You might need to confirm a User Account Control (UAC) prompt if you’re not running as an administrator.
 
 - 
+
+
+
+What it does currently:
+Will automatically detect logs that are considered "slow" from MySQL server, and output the query that caused this to basic chatGPT wrapper in index.html
+
+Running application
+- Download MySQL Server Workbench (Install SQL Server aswell)
+- Once Workbench is open, create a new connection, and once created start the server from the workbench
+- Once running, use the database-test-schema.txt file to copy and paste the SQL query to create the database.
+- Navigate to app.py folder and run 'py app.py'
+
