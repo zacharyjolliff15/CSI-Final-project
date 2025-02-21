@@ -1,5 +1,6 @@
 For windows machines only
 Use python 3.13.2 64-bit for windows
+pip install openAI 
 
 What it does currently:
 Will automatically detect logs that are considered "slow" from MySQL server, and output the query that caused this to basic chatGPT wrapper in index.html
